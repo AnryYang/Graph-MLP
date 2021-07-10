@@ -117,7 +117,7 @@ for epoch in tqdm(range(args.epochs)):
         test_acc = tmp_test_acc
 
 
-log_file = open(r"log.txt", encoding="utf-8",mode="a+")  
+log_file = open(r"my_log.txt", encoding="utf-8",mode="a+")  
 with log_file as file_to_be_write:  
     print('tau', 'order', \
             'batch_size', 'hidden', \
