@@ -67,6 +67,44 @@ class GMLP(nn.Module):
         else:
             return class_logits
 
+
+def get_feat_dis(x):
+    """
+    x :           batch_size x nhid
+    x_dis(i,j):   item means the similarity between x(i) and x(j).
+    """
+    x_dis = x@x.T
+    mask = torch.eye(x_dis.shape[0]).cuda()
+    x_sum = torch.sum(x**2, 1).reshape(-1, 1)
+    x_sum = torch.sqrt(x_sum).reshape(-1, 1)
+    x_sum = x_sum @ x_sum.T
+    x_dis = x_dis*(x_sum**(-1))
+    # x_dis = (1-mask) * x_dis
+    return x_dis
+
+class NGMLP(nn.Module):
+    def __init__(self, nfeat, nhid, nclass, dropout):
+        super(NGMLP, self).__init__()
+        self.nhid = nhid
+        self.mlp = Mlp(nfeat, self.nhid, dropout)
+        self.classifier = Linear(self.nhid, nclass)
+
+    def forward(self, x):
+        x = self.mlp(x)
+
+        feature_cls = x
+        Z = x
+
+        if self.training:
+            x_dis = get_feat_dis(Z)
+
+        class_feature = self.classifier(feature_cls)
+        class_logits = F.log_softmax(class_feature, dim=1)
+
+        if self.training:
+            return class_logits, x_dis
+        else:
+            return class_logits
         
 
 
