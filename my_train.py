@@ -10,7 +10,7 @@ import torch.optim as optim
 from tqdm import tqdm
 
 from models import NGMLP
-from utils import load_citation, accuracy, get_A_r
+from utils import my_load_citation, accuracy
 import warnings
 warnings.filterwarnings('ignore')
 
