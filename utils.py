@@ -184,6 +184,8 @@ def my_load_citation(dataset_str="cora", normalization="AugNormAdj", cuda=True, 
         idx_val = idx_val.cuda()
         idx_test = idx_test.cuda()
 
+    adj = adj.to_dense()
+
     return adj, features, labels, idx_train, idx_val, idx_test
 
 
